@@ -1,0 +1,11 @@
+module test {
+
+    prefix test;
+    namespace "uri://example.com";
+
+    leaf test {
+
+        type string;
+    }
+}   
+

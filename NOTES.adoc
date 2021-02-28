@@ -1,0 +1,86 @@
+= Web Based 
+
+== Create a base image
+
+.compile python and tar
+----
+docker build theia-python-docker/python/
+----
+
+- log into the container and copy `python-3.7-debian-9.tar.gz` to a web-server
+- copy to a webserver
+- update `their-python-docker/Dockerfile` with the rul.
+
+
+.then 
+----
+docker build -t allena29/theia-python theia-python-docker/
+docker push allena29/theia-python:latest
+----
+
+[IMPORTANT]
+====
+VSCode is proprietary - especially the marketplace.
+
+It's forbidden to download extensions from the marketplace and
+directly the use them in anything other than VSCode.
+
+However- sources from github may be permissively licensed.
+
+https://www.gitpod.io/blog/open-vsx/
+====
+
+
+
+== Creating a ready to use environment
+
+.start with a dockerfile that just has 'FROM allena29/theia-python-3-7-3:latest'
+----
+docker build -t staging-theia ready-to-rock-environment/
+docker run --name theia-stage --rm -p 2222:22 -p 3333:3000 -v /home/adam/theia-project:/home/project:rw  -i -t staging-theia
+docker cp theia-stage:/home/theia/.theia ready-to-rock-environment/dot-theia
+----
+
+
+# do stuff
+
+
+Extensions were kind of hacked in by taking the open packages and changing the metadata to something
+sensible and then copying in the extension.
+
+The right way is to encourage the authors to dual-publish
+
+
+- set pylint location to /usr/local/bin/pylint
+- install yangster
+- install xmltools joshdot
+
+ - yang indent / similair for feature / gherkin
+
+
+---
+     "[yang]": {
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+ }
+----xml
+
+
+then docker cp the /home/theia/.theia directory for later dokcer add
+
+
+theia/.theia/settings.json:
+
+
+Once we have done all of this if it's generic enough we could repush the base image
+
+
+
+.When finsihed preparing
+----
+docker build -t allena29/theia-libyang:v1.0.184 ready-to-rock-environment/
+docker push allena29/theia-libyang:v1.0.184 
+----
+
+

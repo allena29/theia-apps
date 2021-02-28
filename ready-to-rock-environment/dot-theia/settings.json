@@ -1,0 +1,25 @@
+{
+    "python.pythonPath": "/pyenv/versions/example/bin/python3",
+    "python.formatting.autopep8Path": "/pyenv/shims/autopep8",
+    "python.linting.pylintPath": "/pyenv/shims/pylint",
+    "[yang]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+    	"editor.formatOnSave": false,
+        "editor.formatOnPaste": false
+    },
+    "[feature]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "workbench.colorTheme": "Monokai Dimmed",
+    "editor.minimap.enabled": false,
+    "editor.enablePreview": false,
+    "gitlens.showWhatsNewAfterUpgrades": false,
+    "gitlens.advanced.telemetry.enabled": false
+
+}

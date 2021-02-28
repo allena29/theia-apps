@@ -1,0 +1,4 @@
+This is an example of using THEA-IDE - https://theia-ide.org/ within a
+docker instance but accessed via a modern web browser.
+
+This shows the use of python-yangvoodoo/libyang-cfii/libyang.

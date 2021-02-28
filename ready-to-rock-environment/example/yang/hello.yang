@@ -1,0 +1,8 @@
+module hello {
+  namespace "http://com.example/hello";
+  prefix hello;
+
+  container test {
+
+  }
+}

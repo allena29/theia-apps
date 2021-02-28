@@ -1,0 +1,40 @@
+{
+    "name": "yang",
+    "displayName": "YANG syntax highlighter",
+    "description": "Code syntax highlighter for yang modeling language",
+    "version": "0.1.3",
+    "publisher": "marko2276",
+    "engines": {
+        "vscode": "^0.10.10"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/marko2276/yang-vscode-syntax"
+    },
+    "icon": "icon/yang.png",
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "yang",
+                "aliases": [
+                    "yang",
+                    "yang"
+                ],
+                "extensions": [
+                    ".yang"
+                ],
+                "configuration": "./yang.configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "yang",
+                "scopeName": "source.yang",
+                "path": "./syntaxes/yang.tmLanguage"
+            }
+        ]
+    }
+}
