@@ -23,37 +23,49 @@ FROM allena29/theia-python:latest
 #    dpkg-reconfigure openssh-server 
 
 RUN apt-get update \
-    && apt-get install -y openssh-client git tmux telnet openssh-server sudo vim \
+    && apt-get install -y openssh-client tree tmux telnet openssh-server sudo vim \
     libpcre3-dev libavl-dev libev-dev cmake libxml2-dev libxslt-dev libffi-dev \ 
+    apache2-utils nano rsync locales-all libxml2-utils git less \
     && rm -rf /var/cache/apt/* \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* && \
     mkdir /run/sshd && \
-    dpkg-reconfigure openssh-server 
+    dpkg-reconfigure openssh-server  
 ADD dot-theia /home/theia/.theia 
 
 RUN \
+  curl http://mystuff.mellon-collie.net/docker-tools/git-2.20.5.tar.gz | tar xvfz - -C / && \
   curl http://mystuff.mellon-collie.net/docker-tools/libyang-debian-v1.0.184.tar.gz | tar xvfz - -C / && \
   ldconfig
 
 
 COPY  example /home/project/example
 
-ENV RUN_THEILA=Y
+ENV RUN_THEIDA=Y
+ENV THEIDA_PROJECT_VERSION=0
 arg UID=1002
 arg USER=developer
+ENV THEIA_USER $USER
 arg PASSWD=somepassword
 RUN useradd -u $UID $USER && \
     usermod -s /bin/bash -d /home/project $USER && \
+    mkdir /nginx && \
     echo "$USER:$PASSWD" | chpasswd && \
     mkdir /pyenv && \
-    touch /example-home.tar && \
+    touch /skeleton-home.tar.bz2 && \
     chown $USER /home -R && \
     chown $USER /pyenv && \
-    chown $USER /example-home.tar && \
+    chown $USER /skeleton-home.tar.bz2 && \
     echo "$USER ALL=(ALL) NOPASSWD: /usr/bin/make" >>/etc/sudoers && \
     echo "$USER ALL=(ALL) NOPASSWD: /sbin/ldconfig" >>/etc/sudoers && \
     echo "$USER ALL=(ALL) NOPASSWD: /usr/sbin/sshd" >>/etc/sudoers && \ 
+    echo "$USER ALL=(ALL) NOPASSWD: /usr/bin/htpasswd" >>/etc/sudoers && \ 
+    echo "$USER ALL=(ALL) NOPASSWD: /bin/tar" >>/etc/sudoers && \ 
+    mkdir /auth && \
+    echo "developer:$apr1$hucwdaj3$fwNbE46iahTWqXnnCbUw90" >> /auth/nginx.htpasswd && \
+    echo "#!/bin/sh" >> /bin/change-web-password && \
+    echo "sudo htpasswd -c $USER /auth/nginx.htpasswd" && \
+    chmod 755 /bin/change-web-password && \
     echo 'export PYENV_ROOT="/pyenv"' >/pyenv-activate && \
     echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >>/pyenv-activate && \
     echo 'eval "$(pyenv init -)"' >>/pyenv-activate && \
@@ -63,8 +75,20 @@ RUN useradd -u $UID $USER && \
     echo 'source /pyenv-activate' >>/startup && \
     echo 'source /pyenv-activate' >/home/theia/.bashrc && \
     echo 'source ~/.bashrc' >>~/.profile && \
+#    echo 'if [ -f /home/project/.THEIDA_PROJECT_VERSION ]' >>/startup && \
+#    echo 'then' >>/startup && \
+ #   echo 'if [ `cat /home/project/.THEIDA_PROJECT_VERSION` != "$THEIDA_PROJECT_VERSION" ]' >>/startup && \
+ #   echo 'then' >>/startup && \
+ #   echo ' cd /home' >>/startup && \
+ #   echo ' tar xvfj /skeleton-home.tar.bz2' >>/startup && \
+ #   echo 'fi' >>/startup && \
+#    echo ' echo "project directory exists"' >>/startup && \
+#    echo 'else' >>/startup && \
+#    echo ' cd /home' >>/startup && \
+#    echo ' sudo tar xvfj /skeleton-home.tar.bz2' >>/startup && \
+#    echo 'fi' >>/startup && \
     echo "sudo /usr/sbin/sshd" >> /startup && \
-    echo 'if [ "$RUN_THEILA" == "Y" ]' >>/startup && \
+    echo 'if [ "$RUN_THEIDA" == "Y" ]' >>/startup && \
     echo 'then' >>/startup && \
     echo "  node /home/theia/src-gen/backend/main.js /home/project --hostname 0.0.0.0" >> /startup && \
     echo 'else' >>/startup && \
@@ -101,19 +125,22 @@ RUN \
      eval "$(pyenv init -)" && \
      pyenv virtualenv 3.7.3 example  && \
      pyenv activate example && \ 
-     pip3 install python-language-server flake8 autopep8 pylint ipython==7.6.1 behave==1.2.6 pytest==6.2.1 && \
+     pip3 install python-language-server flake8 autopep8 pylint black ipython==7.6.1 behave==1.2.6 pytest==6.2.1 && \
      pip3 install http://mystuff.mellon-collie.net/docker-tools/libyang-0.16.79.dev77-cp37-cp37m-linux_x86_64.whl && \
      pip3 install http://mystuff.mellon-collie.net/docker-tools/yangvoodoo-0.0.8.6-py3-none-any.whl && \
      echo 'source /pyenv-activate' >>/home/project/.bashrc  && \
      echo 'export YANGPATH="/home/project/example/yang"' >>/home/project/.bashrc  && \
-     cd /home/ && \
-     tar cvpf /example-home.tar project && \
+     echo "$THEIDA_PROJECT_VERSION" >/home/project/.THEIDA_PROJECT_VERSION && \
      cd /home/project/example && \
      git init . && \
      git config --global user.email "fred.flintstone@example" && \
      git config --global user.name "Fred Flinstone" && \
      git add . && \
-     git commit -m 'First commit - the example'
+     git commit -m 'First commit - the example' && \
+     cd /home && \
+     tar cvpfj /skeleton-home.tar.bz2 project && \
+     rm -fr theia/.gitconfig && \
+     ln -s /home/project/.gitconfig /home/theia/.gitconfig
 
 
 

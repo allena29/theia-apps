@@ -20,6 +20,11 @@
     "editor.minimap.enabled": false,
     "editor.enablePreview": false,
     "gitlens.showWhatsNewAfterUpgrades": false,
-    "gitlens.advanced.telemetry.enabled": false
+    "gitlens.advanced.telemetry.enabled": false,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length=120"
+    ]
+
 
 }
